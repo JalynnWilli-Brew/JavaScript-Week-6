@@ -1,27 +1,18 @@
-let denomination = [1, 2, 5];
-let amount = 11;
 
-function coinDenom(arr, amount) {
-    let total = 0;
-    let largest;
-    while (amount > 0) {
-        largest = Math.max(...arr)
-        if (largest > amount) {
-            arr = removeLargest(arr);
-            if (!arr.length) return -1;
-        }
-        else {
-            amount -= largest;
-            total++;
+var coinChange = function(coins, amount) {
+    const table = new Array(amount + 1).fill(Infinity);
+    table[0] = 0;
+
+    for(let coin of coins) {
+        for(let i = 0; i < table.length; i++) {
+            if(coin <= i) {
+                let idx = i - coin;
+                let potentialAmt = table[idx] + 1;
+                table[i] = Math.min(potentialAmt, table[i]);
+            }
         }
     }
-    return total;
-}
+    return table[table.length - 1] === Infinity ? -1 : [table.length- 1];
+};
 
-function removeLargest(arr) {
-    let largest = Math.max(...arr)
-    largest = arr.filter(arr => arr !== largest)
-    return largest
-}
-
-console.log(coinDenom(denomination, amount))
+console.log(coinChange([1,2,5], 11));
